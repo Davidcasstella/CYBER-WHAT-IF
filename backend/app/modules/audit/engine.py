@@ -52,6 +52,7 @@ def run_audit(db: Session, auditoria: Auditoria) -> Auditoria:
     auditoria.fecha_fin = utcnow()
     create_draft_report(db, auditoria)
     db.commit()
+    db.refresh(auditoria, attribute_names=["informe"])  # la relación se cargó antes de crearlo
     return auditoria
 
 

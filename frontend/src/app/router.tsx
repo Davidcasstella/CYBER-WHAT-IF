@@ -1,69 +1,103 @@
-import { Navigate, createBrowserRouter } from 'react-router'
+import { createBrowserRouter } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import { RequireAuth } from '@/features/auth/require-auth'
+import { HomeRedirect } from './home-redirect'
+import { PageLoading } from './page-loading'
 
 /*
  * Cada página se carga bajo demanda (code-splitting): quien solo abre el login no
- * descarga el código del dashboard ni de administración.
+ * descarga el código del panel ni de administración.
+ * `handle.crumb` alimenta la ruta de navegación de la barra superior (AppShell).
  */
 export const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/app" replace /> },
   {
-    path: '/login',
-    lazy: () => import('@/features/auth/pages/login-page').then((m) => ({ Component: m.LoginPage })),
-  },
-  {
-    path: '/registro',
-    lazy: () => import('@/features/auth/pages/register-page').then((m) => ({ Component: m.RegisterPage })),
-  },
-  {
-    path: '/app',
-    element: <RequireAuth />,
+    // Ruta raíz sin UI: da un fallback mientras carga la primera página lazy.
+    hydrateFallbackElement: <PageLoading />,
     children: [
       {
-        element: <AppShell />,
+        path: '/',
+        lazy: () => import('@/features/landing/pages/landing-page').then((m) => ({ Component: m.LandingPage })),
+      },
+      {
+        path: '/login',
+        lazy: () => import('@/features/auth/pages/login-page').then((m) => ({ Component: m.LoginPage })),
+      },
+      {
+        path: '/registro',
+        lazy: () => import('@/features/auth/pages/register-page').then((m) => ({ Component: m.RegisterPage })),
+      },
+      {
+        path: '/app',
+        element: <RequireAuth />,
         children: [
-          { index: true, element: <Navigate to="auditorias" replace /> },
           {
-            path: 'auditorias',
-            lazy: () => import('@/features/audits/pages/audits-page').then((m) => ({ Component: m.AuditsPage })),
-          },
-          {
-            path: 'auditorias/:id',
-            lazy: () =>
-              import('@/features/audits/pages/audit-detail-page').then((m) => ({ Component: m.AuditDetailPage })),
-          },
-          {
-            element: <RequireAuth roles={['CLIENTE']} />,
+            element: <AppShell />,
             children: [
+              { index: true, element: <HomeRedirect /> },
               {
-                path: 'empresa',
-                lazy: () =>
-                  import('@/features/companies/pages/company-page').then((m) => ({ Component: m.CompanyPage })),
+                path: 'auditorias',
+                handle: { crumb: 'Auditorías' },
+                lazy: () => import('@/features/audits/pages/audits-page').then((m) => ({ Component: m.AuditsPage })),
               },
               {
-                path: 'planes',
+                path: 'auditorias/:id',
+                handle: { crumb: 'Detalle de auditoría' },
                 lazy: () =>
-                  import('@/features/commercial/pages/plans-page').then((m) => ({ Component: m.PlansPage })),
+                  import('@/features/audits/pages/audit-detail-page').then((m) => ({ Component: m.AuditDetailPage })),
               },
-            ],
-          },
-          {
-            path: 'admin',
-            element: <RequireAuth roles={['ADMIN']} />,
-            children: [
               {
-                path: 'usuarios',
-                lazy: () => import('@/features/admin/pages/users-page').then((m) => ({ Component: m.UsersPage })),
+                path: 'informes',
+                handle: { crumb: 'Informes' },
+                lazy: () => import('@/features/reports/pages/reports-page').then((m) => ({ Component: m.ReportsPage })),
+              },
+              {
+                path: 'configuracion',
+                handle: { crumb: 'Configuración' },
+                lazy: () =>
+                  import('@/features/settings/pages/settings-page').then((m) => ({ Component: m.SettingsPage })),
+              },
+              {
+                element: <RequireAuth roles={['CLIENTE']} />,
+                children: [
+                  {
+                    path: 'resumen',
+                    handle: { crumb: 'Resumen' },
+                    lazy: () =>
+                      import('@/features/overview/pages/overview-page').then((m) => ({ Component: m.OverviewPage })),
+                  },
+                  {
+                    path: 'empresa',
+                    handle: { crumb: 'Mi empresa' },
+                    lazy: () =>
+                      import('@/features/companies/pages/company-page').then((m) => ({ Component: m.CompanyPage })),
+                  },
+                  {
+                    path: 'planes',
+                    handle: { crumb: 'Planes' },
+                    lazy: () =>
+                      import('@/features/commercial/pages/plans-page').then((m) => ({ Component: m.PlansPage })),
+                  },
+                ],
+              },
+              {
+                path: 'admin',
+                element: <RequireAuth roles={['ADMIN']} />,
+                children: [
+                  {
+                    path: 'usuarios',
+                    handle: { crumb: 'Usuarios' },
+                    lazy: () => import('@/features/admin/pages/users-page').then((m) => ({ Component: m.UsersPage })),
+                  },
+                ],
               },
             ],
           },
         ],
       },
+      {
+        path: '*',
+        lazy: () => import('./not-found-page').then((m) => ({ Component: m.NotFoundPage })),
+      },
     ],
-  },
-  {
-    path: '*',
-    lazy: () => import('./not-found-page').then((m) => ({ Component: m.NotFoundPage })),
   },
 ])

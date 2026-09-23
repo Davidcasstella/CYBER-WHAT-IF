@@ -13,6 +13,7 @@ from app.modules.simulation.service import generate_simulated_company
 _WITH_RESULTS = (
     selectinload(Auditoria.ejecuciones).selectinload(AuditoriaAtaque.ataque),
     selectinload(Auditoria.ejecuciones).selectinload(AuditoriaAtaque.resultado),
+    selectinload(Auditoria.informe),
 )
 
 

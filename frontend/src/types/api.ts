@@ -84,6 +84,7 @@ export interface Auditoria {
   fecha_inicio: string | null
   fecha_fin: string | null
   ejecuciones: Ejecucion[]
+  informe: { estado: EstadoInforme; fecha_validacion: string | null } | null
 }
 
 export interface Recomendacion {
@@ -122,5 +123,46 @@ export interface Dashboard {
     impacto_operacional: Decimal
     impacto_financiero: Decimal
     vulnerabilidades: number
+  }[]
+}
+
+export interface Dimensiones {
+  tecnico: number
+  operacional: number
+  financiero: number
+  riesgo: number
+}
+
+export interface PuntoHistorial {
+  auditoria_id: number
+  fecha: string | null
+  riesgo_general: number
+  vulnerabilidades: number
+  impacto_financiero: Decimal
+  ataques_evaluados: number
+  dimensiones: Dimensiones
+}
+
+/** GET /resumen — panel del Cliente (reports/summary_schemas.py). */
+export interface Resumen {
+  empresa: { razon_social: string; sector: string | null; cantidad_empleados: number | null } | null
+  auditoria_actual: { id: number; fecha_actualizacion: string | null; plan_completo: boolean } | null
+  auditorias_en_revision: number
+  incluye_dashboard: boolean
+  moneda: string
+  /** Del más antiguo al más reciente: el último es la auditoría actual. */
+  historial: PuntoHistorial[]
+  escenarios: {
+    ataque: string
+    descripcion: string | null
+    estado_ejecucion: Ejecucion['estado_ejecucion']
+    nivel_riesgo: NivelRiesgo | null
+  }[]
+  hallazgos: {
+    id: number
+    descripcion: string
+    escenario: string
+    criticidad: Criticidad
+    estado: 'ABIERTA' | 'EN_REMEDIACION' | 'CERRADA'
   }[]
 }

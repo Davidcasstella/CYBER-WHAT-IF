@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict
 
 from app.core.time import UtcDatetime
 from app.modules.audit.models import EstadoAuditoria, EstadoEjecucion, NivelRiesgo
+from app.modules.reports.models import EstadoInforme
 
 
 class ResultadoImpactoOut(BaseModel):
@@ -36,6 +37,13 @@ class EjecucionOut(BaseModel):
     resultado: ResultadoImpactoOut | None
 
 
+class InformeResumen(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    estado: EstadoInforme
+    fecha_validacion: UtcDatetime | None
+
+
 class AuditoriaOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -47,3 +55,4 @@ class AuditoriaOut(BaseModel):
     fecha_inicio: UtcDatetime | None
     fecha_fin: UtcDatetime | None
     ejecuciones: list[EjecucionOut]
+    informe: InformeResumen | None

@@ -2,26 +2,58 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/hanken-grotesk";
-@import "@fontsource-variable/newsreader";
+/* Newsreader con eje óptico (opsz): los titulares grandes ganan contraste, como en el diseño. */
+@import "@fontsource-variable/newsreader/opsz.css";
+@import "@fontsource-variable/newsreader/opsz-italic.css";
 
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Sistema visual de CyberWhat-If: "informe de auditoría forense".
- * Papel frío + tinta azul profunda. El ÚNICO color saturado de la interfaz es la
- * escala de riesgo del modelo ER (BAJO / MEDIO / ALTO / URGENTE): en esta app,
- * color significa riesgo. No usar los tokens --risk-* para decorar.
+ * Sistema visual de CyberWhat-If (diseño aprobado): verde azulado profundo + acentos bronce
+ * sobre un blanco cálido. Titulares en serif (Newsreader), interfaz en sans (Hanken Grotesk).
+ * Los tokens --risk-* son solo para niveles de riesgo/criticidad; no se usan para decorar.
  */
+
+@theme {
+    /* Paleta de marca de la landing pública (siempre en claro). */
+    --font-brand: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+    --color-brand-ink: #10222b;
+    --color-brand-slate: #4f5d63;
+    --color-brand-50: #f4f7f6;
+    --color-brand-100: #e5eeee;
+    --color-brand-200: #cddfdf;
+    --color-brand-500: #17606f;
+    --color-brand-600: #0f4c5c;
+    --color-brand-700: #0b3a46;
+    --color-brand-bronze: #a8742e;
+    --color-brand-bronze-50: #f8f0e5;
+    --color-brand-danger: #b8432f;
+
+    /* Único movimiento no disparado por el usuario: los ataques flotan alrededor de la cúpula. */
+    --animate-float: float 6s ease-in-out infinite;
+    @keyframes float {
+        0%, 100% { translate: 0 0; }
+        50% { translate: 0 -6px; }
+    }
+}
 
 @theme inline {
     --font-sans: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
-    /* Serif para títulos de informes y cifras de impacto: tono de documento técnico. */
     --font-heading: 'Newsreader Variable', ui-serif, Georgia, serif;
+
+    --color-bronze: var(--bronze);
+    --color-bronze-soft: var(--bronze-soft);
+    --color-teal-soft: var(--teal-soft);
+    --color-rose-soft: var(--rose-soft);
 
     --color-risk-bajo: var(--risk-bajo);
     --color-risk-medio: var(--risk-medio);
     --color-risk-alto: var(--risk-alto);
     --color-risk-urgente: var(--risk-urgente);
+
+    /* Gráficos: serie actual vs. anterior (validadas con dataviz/validate_palette.js). */
+    --color-chart-current: var(--chart-current);
+    --color-chart-previous: var(--chart-previous);
 
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -64,90 +96,103 @@
 }
 
 :root {
-    /* Papel frío y tinta */
-    --background: #f6f7f9;
-    --foreground: #15233f;
+    --background: #f7f6f3;
+    --foreground: #13262f;
     --card: #ffffff;
-    --card-foreground: #15233f;
+    --card-foreground: #13262f;
     --popover: #ffffff;
-    --popover-foreground: #15233f;
-    --primary: #15233f;
-    --primary-foreground: #f6f7f9;
-    --secondary: #e9edf3;
-    --secondary-foreground: #15233f;
-    --muted: #eef1f5;
-    --muted-foreground: #5b6b82;
-    --accent: #e9edf3;
-    --accent-foreground: #15233f;
-    --destructive: #b3122e;
-    --border: #d9dee7;
-    --input: #cbd2dd;
-    --ring: #3b5ba5;
+    --popover-foreground: #13262f;
+    --primary: #0f4c5c;
+    --primary-foreground: #ffffff;
+    --secondary: #eef2f1;
+    --secondary-foreground: #13262f;
+    --muted: #f1f0ec;
+    --muted-foreground: #5d6a70;
+    --accent: #eaf1f1;
+    --accent-foreground: #0f4c5c;
+    --destructive: #b8432f;
+    --border: #e5e2dc;
+    --input: #d7d4cc;
+    --ring: #17707e;
 
-    /* Escala de riesgo (ER: nivel_riesgo) */
+    --bronze: #a8742e;
+    --bronze-soft: #f6ecdd;
+    --teal-soft: #e5eff0;
+    --rose-soft: #f7e7e3;
+
     --risk-bajo: #2f7d5b;
-    --risk-medio: #9a7214;
+    --risk-medio: #b7791f;
     --risk-alto: #c8551b;
-    --risk-urgente: #b3122e;
+    --risk-urgente: #c0392b;
 
-    /* Las 4 dimensiones de impacto en gráficos: variaciones de tinta, no colores de riesgo. */
-    --chart-1: #15233f;
-    --chart-2: #3b5ba5;
-    --chart-3: #7d8fb0;
-    --chart-4: #b7c2d6;
-    --chart-5: #5b6b82;
+    --chart-current: #00839c;
+    --chart-previous: #c27a24;
 
-    --radius: 0.375rem;
+    --chart-1: #0f4c5c;
+    --chart-2: #00839c;
+    --chart-3: #c27a24;
+    --chart-4: #8db8bc;
+    --chart-5: #5d6a70;
 
-    --sidebar: #eef1f5;
-    --sidebar-foreground: #15233f;
-    --sidebar-primary: #15233f;
-    --sidebar-primary-foreground: #f6f7f9;
-    --sidebar-accent: #e1e6ee;
-    --sidebar-accent-foreground: #15233f;
-    --sidebar-border: #d9dee7;
-    --sidebar-ring: #3b5ba5;
+    --radius: 0.625rem;
+
+    --sidebar: #fbfaf8;
+    --sidebar-foreground: #13262f;
+    --sidebar-primary: #0f4c5c;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #eef2f1;
+    --sidebar-accent-foreground: #0f4c5c;
+    --sidebar-border: #e5e2dc;
+    --sidebar-ring: #17707e;
 }
 
 .dark {
-    --background: #0e1626;
-    --foreground: #e6eaf1;
-    --card: #152036;
-    --card-foreground: #e6eaf1;
-    --popover: #152036;
-    --popover-foreground: #e6eaf1;
-    --primary: #c9d6f0;
-    --primary-foreground: #0e1626;
-    --secondary: #1c2940;
-    --secondary-foreground: #e6eaf1;
-    --muted: #1c2940;
-    --muted-foreground: #93a1b8;
-    --accent: #1c2940;
-    --accent-foreground: #e6eaf1;
-    --destructive: #f2667d;
-    --border: #26344d;
-    --input: #2e3d58;
-    --ring: #7d9be0;
+    --background: #0f191d;
+    --foreground: #e6eced;
+    --card: #152329;
+    --card-foreground: #e6eced;
+    --popover: #152329;
+    --popover-foreground: #e6eced;
+    --primary: #5fb3c0;
+    --primary-foreground: #0b1a1f;
+    --secondary: #1d2e35;
+    --secondary-foreground: #e6eced;
+    --muted: #1d2e35;
+    --muted-foreground: #97a7ad;
+    --accent: #1d2e35;
+    --accent-foreground: #e6eced;
+    --destructive: #f07a66;
+    --border: #26383f;
+    --input: #30454d;
+    --ring: #5fb3c0;
+
+    --bronze: #d49a52;
+    --bronze-soft: #2e2519;
+    --teal-soft: #17313a;
+    --rose-soft: #33201d;
 
     --risk-bajo: #5dbb8f;
     --risk-medio: #e0b04a;
     --risk-alto: #ee8a55;
-    --risk-urgente: #f2667d;
+    --risk-urgente: #f07a66;
 
-    --chart-1: #c9d6f0;
-    --chart-2: #7d9be0;
-    --chart-3: #5b6f94;
-    --chart-4: #3a4a68;
-    --chart-5: #93a1b8;
+    --chart-current: #1aa3b8;
+    --chart-previous: #c98232;
 
-    --sidebar: #111b2e;
-    --sidebar-foreground: #e6eaf1;
-    --sidebar-primary: #c9d6f0;
-    --sidebar-primary-foreground: #0e1626;
-    --sidebar-accent: #1c2940;
-    --sidebar-accent-foreground: #e6eaf1;
-    --sidebar-border: #26344d;
-    --sidebar-ring: #7d9be0;
+    --chart-1: #5fb3c0;
+    --chart-2: #1aa3b8;
+    --chart-3: #c98232;
+    --chart-4: #3b6a72;
+    --chart-5: #97a7ad;
+
+    --sidebar: #121f24;
+    --sidebar-foreground: #e6eced;
+    --sidebar-primary: #5fb3c0;
+    --sidebar-primary-foreground: #0b1a1f;
+    --sidebar-accent: #1d2e35;
+    --sidebar-accent-foreground: #e6eced;
+    --sidebar-border: #26383f;
+    --sidebar-ring: #5fb3c0;
 }
 
 @layer base {
@@ -162,8 +207,12 @@
         @apply bg-background text-foreground antialiased;
     }
     h1, h2, h3 {
-        @apply font-heading tracking-tight;
+        @apply font-heading font-semibold tracking-tight;
     }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
 }
 
 @media (prefers-reduced-motion: reduce) {
