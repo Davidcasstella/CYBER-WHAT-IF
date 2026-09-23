@@ -1,0 +1,174 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/hanken-grotesk";
+@import "@fontsource-variable/newsreader";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Sistema visual de CyberWhat-If: "informe de auditoría forense".
+ * Papel frío + tinta azul profunda. El ÚNICO color saturado de la interfaz es la
+ * escala de riesgo del modelo ER (BAJO / MEDIO / ALTO / URGENTE): en esta app,
+ * color significa riesgo. No usar los tokens --risk-* para decorar.
+ */
+
+@theme inline {
+    --font-sans: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+    /* Serif para títulos de informes y cifras de impacto: tono de documento técnico. */
+    --font-heading: 'Newsreader Variable', ui-serif, Georgia, serif;
+
+    --color-risk-bajo: var(--risk-bajo);
+    --color-risk-medio: var(--risk-medio);
+    --color-risk-alto: var(--risk-alto);
+    --color-risk-urgente: var(--risk-urgente);
+
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    /* Papel frío y tinta */
+    --background: #f6f7f9;
+    --foreground: #15233f;
+    --card: #ffffff;
+    --card-foreground: #15233f;
+    --popover: #ffffff;
+    --popover-foreground: #15233f;
+    --primary: #15233f;
+    --primary-foreground: #f6f7f9;
+    --secondary: #e9edf3;
+    --secondary-foreground: #15233f;
+    --muted: #eef1f5;
+    --muted-foreground: #5b6b82;
+    --accent: #e9edf3;
+    --accent-foreground: #15233f;
+    --destructive: #b3122e;
+    --border: #d9dee7;
+    --input: #cbd2dd;
+    --ring: #3b5ba5;
+
+    /* Escala de riesgo (ER: nivel_riesgo) */
+    --risk-bajo: #2f7d5b;
+    --risk-medio: #9a7214;
+    --risk-alto: #c8551b;
+    --risk-urgente: #b3122e;
+
+    /* Las 4 dimensiones de impacto en gráficos: variaciones de tinta, no colores de riesgo. */
+    --chart-1: #15233f;
+    --chart-2: #3b5ba5;
+    --chart-3: #7d8fb0;
+    --chart-4: #b7c2d6;
+    --chart-5: #5b6b82;
+
+    --radius: 0.375rem;
+
+    --sidebar: #eef1f5;
+    --sidebar-foreground: #15233f;
+    --sidebar-primary: #15233f;
+    --sidebar-primary-foreground: #f6f7f9;
+    --sidebar-accent: #e1e6ee;
+    --sidebar-accent-foreground: #15233f;
+    --sidebar-border: #d9dee7;
+    --sidebar-ring: #3b5ba5;
+}
+
+.dark {
+    --background: #0e1626;
+    --foreground: #e6eaf1;
+    --card: #152036;
+    --card-foreground: #e6eaf1;
+    --popover: #152036;
+    --popover-foreground: #e6eaf1;
+    --primary: #c9d6f0;
+    --primary-foreground: #0e1626;
+    --secondary: #1c2940;
+    --secondary-foreground: #e6eaf1;
+    --muted: #1c2940;
+    --muted-foreground: #93a1b8;
+    --accent: #1c2940;
+    --accent-foreground: #e6eaf1;
+    --destructive: #f2667d;
+    --border: #26344d;
+    --input: #2e3d58;
+    --ring: #7d9be0;
+
+    --risk-bajo: #5dbb8f;
+    --risk-medio: #e0b04a;
+    --risk-alto: #ee8a55;
+    --risk-urgente: #f2667d;
+
+    --chart-1: #c9d6f0;
+    --chart-2: #7d9be0;
+    --chart-3: #5b6f94;
+    --chart-4: #3a4a68;
+    --chart-5: #93a1b8;
+
+    --sidebar: #111b2e;
+    --sidebar-foreground: #e6eaf1;
+    --sidebar-primary: #c9d6f0;
+    --sidebar-primary-foreground: #0e1626;
+    --sidebar-accent: #1c2940;
+    --sidebar-accent-foreground: #e6eaf1;
+    --sidebar-border: #26344d;
+    --sidebar-ring: #7d9be0;
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    html {
+        @apply font-sans;
+        font-feature-settings: "tnum" 1; /* cifras tabulares: los montos se alinean */
+    }
+    body {
+        @apply bg-background text-foreground antialiased;
+    }
+    h1, h2, h3 {
+        @apply font-heading tracking-tight;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

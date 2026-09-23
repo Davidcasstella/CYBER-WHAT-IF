@@ -1,0 +1,42 @@
+[project]
+name = "cyberwhatif-api"
+version = "0.1.0"
+description = "API de CyberWhat-If: auditoría automatizada de ciberseguridad sobre empresas simuladas."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115",
+    "sqlalchemy>=2.0",
+    "pymysql>=1.1",
+    "cryptography>=43",
+    "alembic>=1.14",
+    "pydantic-settings>=2.6",
+    "pyjwt>=2.10",
+    "pwdlib[argon2]>=0.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "httpx>=0.28",
+    "ruff>=0.8",
+    "mypy>=1.13",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "SIM", "RUF"]
+ignore = ["B008"] # FastAPI usa Depends() en valores por defecto
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
