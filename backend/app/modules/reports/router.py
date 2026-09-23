@@ -5,6 +5,8 @@ from app.modules.audit import service as audit_service
 from app.modules.identity.models import Rol, Usuario
 from app.modules.reports import service
 from app.modules.reports.schemas import DashboardOut, InformeOut
+from app.modules.reports.summary import build_summary
+from app.modules.reports.summary_schemas import ResumenOut
 
 router = APIRouter(prefix="/auditorias/{auditoria_id}", tags=["Informes y Dashboard"])
 
@@ -30,3 +32,12 @@ def validate_report(
 def get_dashboard(db: DbSession, user: CurrentUser, auditoria_id: int) -> DashboardOut:
     auditoria = audit_service.get_audit(db, user, auditoria_id)
     return service.build_dashboard(db, user, auditoria)
+
+
+summary_router = APIRouter(tags=["Informes y Dashboard"])
+
+
+@summary_router.get("/resumen", response_model=ResumenOut)
+def get_summary(db: DbSession, user: Usuario = Depends(require_roles(Rol.CLIENTE))) -> ResumenOut:
+    """Panel del Cliente: estado de su empresa, indicadores, escenarios y hallazgos."""
+    return build_summary(db, user)

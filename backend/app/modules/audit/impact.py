@@ -61,3 +61,53 @@ def _nivel_riesgo(score: float) -> NivelRiesgo:
     if score >= 15:
         return NivelRiesgo.MEDIO
     return NivelRiesgo.BAJO
+
+
+# --- Puntuaciones agregadas para el panel del Cliente (RF-08) ---------------------------
+
+_PUNTAJE_RIESGO = {
+    NivelRiesgo.BAJO: 20,
+    NivelRiesgo.MEDIO: 45,
+    NivelRiesgo.ALTO: 70,
+    NivelRiesgo.URGENTE: 90,
+}
+
+# Pérdida de referencia: un mes laboral (160 h) de toda la empresa detenida.
+HORAS_REFERENCIA_FINANCIERA = 160
+
+
+@dataclass(frozen=True)
+class DimensionScores:
+    """Las 4 dimensiones en la misma escala 0..100 (0 = bajo impacto)."""
+
+    tecnico: int
+    operacional: int
+    financiero: int
+    riesgo: int
+
+    @property
+    def riesgo_general(self) -> int:
+        return round((self.tecnico + self.operacional + self.financiero + self.riesgo) / 4)
+
+
+@dataclass(frozen=True)
+class AttackResult:
+    impacto_tecnico: Decimal
+    impacto_operacional: Decimal
+    impacto_financiero: Decimal
+    nivel_riesgo: NivelRiesgo
+
+
+def summarize(resultados: list[AttackResult], cantidad_empleados: int) -> DimensionScores:
+    """Resume los ataques de una auditoría. Provisional, como el resto de este módulo."""
+    if not resultados:
+        return DimensionScores(0, 0, 0, 0)
+    n = len(resultados)
+    total_financiero = sum((r.impacto_financiero for r in resultados), Decimal(0))
+    referencia = COSTO_HORA_POR_EMPLEADO * max(cantidad_empleados, 1) * HORAS_REFERENCIA_FINANCIERA
+    return DimensionScores(
+        tecnico=round(sum(r.impacto_tecnico for r in resultados) / n),
+        operacional=round(sum(r.impacto_operacional for r in resultados) / n),
+        financiero=min(100, round(total_financiero / referencia * 100)),
+        riesgo=round(sum(_PUNTAJE_RIESGO[r.nivel_riesgo] for r in resultados) / n),
+    )

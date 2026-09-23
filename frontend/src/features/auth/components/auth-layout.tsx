@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router'
 import { RiskScale } from '@/features/audits/components/risk-scale'
 
 /** Marco de las pantallas públicas: marca a la izquierda, formulario a la derecha. */
@@ -6,7 +7,9 @@ export function AuthLayout({ title, children }: { title: string; children: React
   return (
     <main className="grid min-h-svh lg:grid-cols-[5fr_4fr]">
       <section className="bg-primary text-primary-foreground hidden flex-col justify-between p-12 lg:flex">
-        <p className="font-heading text-2xl">CyberWhat-If</p>
+        <Link to="/" className="font-heading self-start text-2xl">
+          CyberWhat-If
+        </Link>
         <div className="max-w-md space-y-8">
           <h1 className="text-5xl leading-[1.05]">
             Qué le pasaría a tu empresa ante un ataque real, sin arriesgar un solo servidor.
@@ -22,7 +25,9 @@ export function AuthLayout({ title, children }: { title: string; children: React
       <section className="flex items-center justify-center px-4 py-12 sm:px-8">
         <div className="w-full max-w-sm space-y-8">
           <div className="space-y-2">
-            <p className="font-heading text-xl lg:hidden">CyberWhat-If</p>
+            <Link to="/" className="font-heading text-xl lg:hidden">
+              CyberWhat-If
+            </Link>
             <h2 className="text-3xl">{title}</h2>
           </div>
           {children}

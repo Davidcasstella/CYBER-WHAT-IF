@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/query-state'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +18,14 @@ export function ReportSection({ auditoriaId }: { auditoriaId: number }) {
   const report = useReport(auditoriaId, true)
   const dashboard = useDashboard(auditoriaId, true)
   const validate = useValidateReport()
+  const { hash } = useLocation()
+
+  // Los enlaces "Ver informe" llegan con #informe: bajar hasta aquí cuando el informe cargue.
+  useEffect(() => {
+    if (hash === '#informe' && report.data) {
+      document.getElementById('informe')?.scrollIntoView({ block: 'start' })
+    }
+  }, [hash, report.data])
 
   // RN-04: para el Cliente, un 404 significa "todavía en revisión", no un error.
   if (report.error instanceof ApiError && report.error.status === 404) {
@@ -31,7 +41,7 @@ export function ReportSection({ auditoriaId }: { auditoriaId: number }) {
   if (!informe) return null
 
   return (
-    <section aria-labelledby="informe" className="space-y-8 pt-12">
+    <section aria-labelledby="informe" className="scroll-mt-24 space-y-8 pt-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
           <h2 id="informe" className="text-3xl">

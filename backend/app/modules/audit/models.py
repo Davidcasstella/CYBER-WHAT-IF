@@ -19,7 +19,7 @@ from app.core.database import Base
 from app.modules.simulation.models import Criticidad
 
 if TYPE_CHECKING:
-    from app.modules.reports.models import RecomendacionMitigacion
+    from app.modules.reports.models import Informe, RecomendacionMitigacion
 
 
 class NivelDificultad(enum.StrEnum):
@@ -97,6 +97,8 @@ class Auditoria(Base):
     ejecuciones: Mapped[list["AuditoriaAtaque"]] = relationship(
         back_populates="auditoria", cascade="all, delete-orphan"
     )
+    # Solo lectura: el informe lo crea y modifica el módulo de informes.
+    informe: Mapped["Informe | None"] = relationship(viewonly=True)
 
 
 class AuditoriaAtaque(Base):
