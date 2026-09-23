@@ -1,0 +1,21 @@
+# Secretos: nunca al repositorio
+.env
+.env.local
+*.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.db
+
+# Node (frontend/.gitignore cubre el resto)
+node_modules/
+
+# Editores / SO
+.idea/
+.DS_Store
+Thumbs.db
