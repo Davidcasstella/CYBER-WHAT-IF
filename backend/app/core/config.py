@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
 
     database_url: str = "mysql+pymysql://cyberwhatif:cyberwhatif@localhost:3306/cyberwhatif"
+    #: Exige TLS verificando el certificado del servidor (Azure Database for MySQL lo requiere).
+    database_ssl: bool = False
 
     jwt_secret: str = Field(min_length=16)
     jwt_algorithm: str = "HS256"

@@ -72,6 +72,22 @@ npm run dev
 
 El admin inicial es `admin@cyberwhatif.co` (se puede cambiar con `SEED_ADMIN_EMAIL`).
 
+### Base de datos en Azure (opcional)
+
+El proyecto tiene un **Azure Database for MySQL Flexible Server** (`cyberwhatif-db`, región West US 2, grupo `rg-cyber-what-if`). Para usarlo en lugar del MySQL local:
+
+1. Pide el `backend/.env` a quien administra la suscripción. **Nunca** se sube a git.
+2. Pon en `.env` la URL del usuario de aplicación `cwapp` y `DATABASE_SSL=true`. Azure exige TLS y el backend valida el certificado del servidor (ver `backend/.env.example`).
+3. El firewall solo permite IPs registradas. Si cambias de red, agrega tu IP:
+   `az mysql flexible-server firewall-rule create -g rg-cyber-what-if -n cyberwhatif-db --rule-name mi-ip --start-ip-address <IP> --end-ip-address <IP>`
+
+Para ahorrar crédito, detén el servidor cuando no lo uses (Azure lo vuelve a encender solo a los 7 días):
+
+```bash
+az mysql flexible-server stop  -g rg-cyber-what-if -n cyberwhatif-db
+az mysql flexible-server start -g rg-cyber-what-if -n cyberwhatif-db
+```
+
 ## Flujo del MVP
 
 1. El **Cliente** se registra, registra su empresa y contrata un plan. La app lo redirige a WhatsApp.

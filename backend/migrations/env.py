@@ -1,14 +1,16 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import create_engine, pool
 
 from app import models as _models  # noqa: F401  registra todos los modelos
 from app.core.config import get_settings
-from app.core.database import Base
+from app.core.database import Base, connect_args
 
 config = context.config
-config.set_main_option("sqlalchemy.url", get_settings().database_url)
+# configparser interpreta '%' como interpolación: se escapa para que las contraseñas
+# codificadas para URL (%2B, %23...) lleguen intactas y no se filtren en un error.
+config.set_main_option("sqlalchemy.url", get_settings().database_url.replace("%", "%%"))
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -30,10 +32,9 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
+    settings = get_settings()
+    connectable = create_engine(
+        settings.database_url, poolclass=pool.NullPool, connect_args=connect_args(settings)
     )
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
