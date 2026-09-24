@@ -1,0 +1,13 @@
+# Nunca subir credenciales ni artefactos locales a Vercel
+.env
+*.env
+.azure-admin.env
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.db
+tests/
+.env.local
+.vercel/

@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     app_env: Literal["development", "test", "production"] = "development"
     app_debug: bool = False
     api_prefix: str = "/api/v1"
+    #: Swagger en /docs. Sin definir: activo salvo en producción. DOCS_ENABLED=true lo fuerza.
+    docs_enabled: bool | None = None
 
     database_url: str = "mysql+pymysql://cyberwhatif:cyberwhatif@localhost:3306/cyberwhatif"
     #: Exige TLS verificando el certificado del servidor (Azure Database for MySQL lo requiere).

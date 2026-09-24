@@ -4,6 +4,21 @@ Plataforma web que audita la ciberseguridad de una empresa **sin tocar su infrae
 
 Documentos de referencia: Aterrizaje de la idea, SRS v1.0, Estado del arte y modelo de dominio v1.0, y Modelo ER v1.3.
 
+## En línea
+
+| Qué | URL |
+|---|---|
+| Página web (landing y panel) | https://cyberwhatif-web.vercel.app |
+| Iniciar sesión | https://cyberwhatif-web.vercel.app/login |
+| API (backend) | https://cyberwhatif-api.vercel.app |
+| Documentación de la API (Swagger, se puede probar cada endpoint) | https://cyberwhatif-api.vercel.app/docs |
+| Especificación OpenAPI (JSON) | https://cyberwhatif-api.vercel.app/openapi.json |
+| Estado del servicio | https://cyberwhatif-api.vercel.app/health |
+
+La web y la API están publicadas en Vercel (proyectos `cyberwhatif-web` y `cyberwhatif-api`) y usan la base de datos MySQL en Azure. La web reenvía `/api` al backend, así que el navegador solo habla con una dirección.
+
+Para probar endpoints protegidos en `/docs`: pulsa **Authorize**, escribe el correo en `username` y la contraseña, y Swagger guarda el token. En local, la misma documentación está en http://localhost:8000/docs.
+
 ## Stack
 
 | Capa | Tecnología |
@@ -78,8 +93,8 @@ El proyecto tiene un **Azure Database for MySQL Flexible Server** (`cyberwhatif-
 
 1. Pide el `backend/.env` a quien administra la suscripción. **Nunca** se sube a git.
 2. Pon en `.env` la URL del usuario de aplicación `cwapp` y `DATABASE_SSL=true`. Azure exige TLS y el backend valida el certificado del servidor (ver `backend/.env.example`).
-3. El firewall solo permite IPs registradas. Si cambias de red, agrega tu IP:
-   `az mysql flexible-server firewall-rule create -g rg-cyber-what-if -n cyberwhatif-db --rule-name mi-ip --start-ip-address <IP> --end-ip-address <IP>`
+3. El firewall está abierto a cualquier IP (regla `permitir-todos`) para que todo el equipo se conecte desde donde esté. La base la protegen las contraseñas aleatorias, el TLS obligatorio y un usuario de app con permisos solo sobre `cyberwhatif`: **comparte `backend/.env` solo por un canal privado**.
+4. Los datos iniciales (ataques, planes y el admin `admin@cyberwhatif.co`) ya están cargados. La contraseña del admin está en `backend/.azure-admin.env`.
 
 Para ahorrar crédito, detén el servidor cuando no lo uses (Azure lo vuelve a encender solo a los 7 días):
 
@@ -87,6 +102,17 @@ Para ahorrar crédito, detén el servidor cuando no lo uses (Azure lo vuelve a e
 az mysql flexible-server stop  -g rg-cyber-what-if -n cyberwhatif-db
 az mysql flexible-server start -g rg-cyber-what-if -n cyberwhatif-db
 ```
+
+### Publicar cambios en Vercel
+
+Cada carpeta ya está enlazada a su proyecto de Vercel. Con la CLI conectada a la cuenta del proyecto (`vercel whoami`):
+
+```bash
+cd backend  && vercel deploy --prod    # API
+cd frontend && vercel deploy --prod    # web
+```
+
+Las variables del backend (`DATABASE_URL`, `DATABASE_SSL`, `JWT_SECRET`, `APP_ENV`, `DOCS_ENABLED`...) viven cifradas en Vercel. Se ven con `vercel env ls` y se cambian con `vercel env add`. Los `.vercelignore` impiden subir `.env` y `.azure-admin.env`.
 
 ## Flujo del MVP
 
